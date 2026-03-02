@@ -26,7 +26,8 @@ function RedirectPage()  {
         if (!response.ok) {
           throw new Error(data.error || 'Invalid or expired link');
         }
-
+        console.log("API URL:", apiUrl);
+        console.log("Resolve URL:", `${apiUrl}/api/resolve/${slug}`);
         // Redirect to the long URL
         window.location.href = data.longUrl;
         }catch (err) {
