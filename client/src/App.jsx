@@ -47,12 +47,12 @@ function HomePage() {
       });
 
       const data = await res.json();
-      console.log("Resolve API response:", data);
+      
       if (!res.ok) {
         throw new Error(data.error || "Server error");
       }
       // 🔐 defensive safety
-      if (!data || !data.longUrl) {
+      if (!data ) {
         throw new Error("Invalid server response");
       }
       // Construct full short URL with frontend domain
