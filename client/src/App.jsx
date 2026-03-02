@@ -47,22 +47,20 @@ function HomePage() {
       });
 
       const data = await res.json();
-
+      console.log("Resolve API response:", data);
       if (!res.ok) {
         throw new Error(data.error || "Server error");
       }
-
+      // 🔐 defensive safety
+      if (!data || !data.longUrl) {
+        throw new Error("Invalid server response");
+      }
       // Construct full short URL with frontend domain
       const frontendUrl = window.location.origin;
       const shortUrl = `${frontendUrl}/${data.slug}`;
       setResult(shortUrl);
       // Measurement ID stuff
-      if (window.gtag) {
-        window.gtag("event", "generate_link", {
-          slug: data.slug,
-          method: "custom_phrase",
-        });
-      }
+      
     } catch (err) {
       showErrorToast(err.message || "Failed to contact the server");
     } finally {
