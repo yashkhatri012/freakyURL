@@ -4,10 +4,11 @@ import './App.css'
 import LinkForm from './components/LinkForm'
 import ResultCard from './components/ResultCard'
 import { normalizeAndValidateUrl } from './utils/validation';
+import Toast from './components/Toast';
 
 
 
-function App() {
+function HomePage() {
     const [link, setLink] = useState("");
   const [phrase, setPhrase] = useState("");
   
@@ -128,9 +129,12 @@ function App() {
         </footer>
 
         </div>
+
+        
+      <Toast message={toastMessage} show={showToast} onClose={closeToast} />
       </div>
     </>
   )
 }
 
-export default App
+export default HomePage

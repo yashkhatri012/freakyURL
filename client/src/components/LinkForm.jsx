@@ -16,7 +16,7 @@ const LinkForm = ({link , setLink, phrase, setPhrase, loading, onGenerate}) => {
         />
       </div>
       <div className='mb-4'>
-        <label className='block mb-2 text-sm font-medium text-white' >custom phrase</label>
+        <label className='block mb-2 text-sm font-medium text-white' >Custom Phrase</label>
         <input className='w-full py-3 px-3.5 border-[1.5px] border-[#2a2a2a] rounded-lg text-[15px] transition-colors duration-200 bg-[#0a0a0a] text-white focus:outline-none focus:border-[#4a4a4a]'
           type="text"
           value={phrase}

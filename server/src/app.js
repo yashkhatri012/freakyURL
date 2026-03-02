@@ -119,7 +119,7 @@ app.post("/api/shorten", async (req,res)=>{
 // GET /api/resolve/slug
 
 
-app.get("api/resolve/:slug", async(req,res)=>{
+app.get("/api/resolve/:slug", async(req,res)=>{
     try {
         const {slug} = req.params;
 
