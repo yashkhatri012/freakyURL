@@ -4,10 +4,18 @@ import express from 'express';
 import cors from 'cors';
 
 import UrlModel from './models/urlModel.js';
+import { redis } from './config/redis.js';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+}));
+
+
+
+
 app.use(express.json());
 
 app.get("/health", (req, res) => {
@@ -123,6 +131,14 @@ app.get("/api/resolve/:slug", async(req,res)=>{
     try {
         const {slug} = req.params;
 
+          // Check Redis cache first
+    const cachedUrl = await redis.get(slug);
+    if (cachedUrl) {
+      console.log("REDIS HIT:", slug);
+      
+
+      return res.status(200).json({ longUrl: cachedUrl });
+    }
 
 
                 // Cache miss - fetch from database
@@ -135,7 +151,8 @@ app.get("/api/resolve/:slug", async(req,res)=>{
                 error: "Link not found"
             });
             }
-
+             await redis.set(slug, url.longUrl);
+            console.log("Redis set slug")
             url.save().catch(() => {});
 
                     res.status(200).json({ longUrl: url.longUrl });
