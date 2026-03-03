@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import express from "express";
 import cors from "cors";
-
+import BLOCKED_EXTENSIONS from "./utils/blockedExtensions.js";
 import UrlModel from "./models/urlModel.js";
 import { redis } from "./config/redis.js";
 import dotenv from "dotenv";
@@ -33,7 +33,6 @@ const slugify = (text) => {
     .replace(/\s+/g, "-");
 };
 
-const BLOCKED_EXTENSIONS = require("./utils/blockedExtensions");
 
 const hasBlockedExtension = (text) => {
   if (!text) return false;
