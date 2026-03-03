@@ -5,7 +5,8 @@ import cors from 'cors';
 
 import UrlModel from './models/urlModel.js';
 import { redis } from './config/redis.js';
-
+import dotenv from "dotenv";
+dotenv.config();
 const app = express();
 
 app.use(cors({
