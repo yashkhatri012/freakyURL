@@ -7,12 +7,22 @@ import { redis } from "./config/redis.js";
 import dotenv from "dotenv";
 dotenv.config();
 const app = express();
+const allowedOrigins = [
+  "https://frky.vercel.app",
+  "http://localhost:5173"
+];
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed"));
+      }
+    },
     credentials: true,
-  }),
+  })
 );
 
 app.use(express.json());
