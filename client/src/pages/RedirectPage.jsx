@@ -14,27 +14,29 @@ function RedirectPage()  {
   useEffect(()=>{
     const resolveAndRedirect = async ()=>{
         try {
-            const apiUrl = import.meta.env.VITE_API_URL;
-            if (!apiUrl) {
-          throw new Error('API URL not configured');
+          async function fetchWithRetry(url, retries = 2) {
+          try {
+            return await fetch(url);
+          } catch (err) {
+            if (retries === 0) throw err;
+            return fetchWithRetry(url, retries - 1);
+          }
         }
-
-
-        const response = await fetch(`${apiUrl}/api/resolve/${slug}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Invalid or expired link');
-        }
-        console.log("API URL:", apiUrl);
-        console.log("Resolve URL:", `${apiUrl}/api/resolve/${slug}`);
-        // Redirect to the long URL
-        window.location.href = data.longUrl;
-        }catch (err) {
-        setError(err.message || 'Failed to resolve link');
-        setShowToast(true);
-        setLoading(false);
+      const response = await fetchWithRetry(`${apiUrl}/api/resolve/${slug}`);
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Invalid or expired link");
       }
+
+      const data = await response.json();
+      window.location.href = data.longUrl;
+
+    } catch (err) {
+      console.error("Resolve failed:", err);
+      setError(err.message || "Network error");
+      setShowToast(true);
+      setLoading(false);
+}
 
 
     }
@@ -46,12 +48,8 @@ function RedirectPage()  {
     <div className="max-w-170 w-full mx-auto py-6 px-3 box-border">
 
       <header className="text-center mb-12">
-        <h1 className="text-5xl font-bold mb-2 tracking-[-0.5px] text-white">
-          FreakyURL
-        </h1>
-        <p className="text-[#888] text-base">
-          make your links look suspicious
-        </p>
+        
+        
       </header>
 
       <div className="flex flex-col items-center justify-center min-h-100 gap-5">
@@ -60,7 +58,7 @@ function RedirectPage()  {
           <>
             <div className="w-10 h-10 border-4 border-[#f0f0f0] border-t-[#ff6b6b] rounded-full animate-spin" />
             <p className="text-[#666] text-base">
-              Resolving your link...
+              
             </p>
           </>
         )}
