@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const app = express();
 const allowedOrigins = [
-  "https://frky.vercel.app",
+  "https://google67.vercel.app",
   "http://localhost:5173"
 ];
 
