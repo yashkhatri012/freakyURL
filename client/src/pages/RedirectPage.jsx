@@ -11,37 +11,33 @@ function RedirectPage()  {
   const [showToast, setShowToast] = useState(false);
 
 
-  useEffect(()=>{
-    const resolveAndRedirect = async ()=>{
+  useEffect(() => {
+      if (!slug) return;
+
+      const resolveAndRedirect = async () => {
         try {
-          async function fetchWithRetry(url, retries = 2) {
-          try {
-            return await fetch(url);
-          } catch (err) {
-            if (retries === 0) throw err;
-            return fetchWithRetry(url, retries - 1);
+          const apiUrl = import.meta.env.VITE_API_URL;
+
+          const response = await fetch(`${apiUrl}/api/resolve/${slug}`);
+
+          if (!response.ok) {
+            const data = await response.json().catch(() => ({}));
+            throw new Error(data.error || "Invalid or expired link");
           }
+
+          const data = await response.json();
+          window.location.href = data.longUrl;
+
+        } catch (err) {
+          console.error(err);
+          setError(err.message || "Network error");
+          setShowToast(true);
+          setLoading(false);
         }
-      const response = await fetchWithRetry(`${apiUrl}/api/resolve/${slug}`);
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
-        throw new Error(data.error || "Invalid or expired link");
-      }
+      };
 
-      const data = await response.json();
-      window.location.href = data.longUrl;
-
-    } catch (err) {
-      console.error("Resolve failed:", err);
-      setError(err.message || "Network error");
-      setShowToast(true);
-      setLoading(false);
-}
-
-
-    }
-    resolveAndRedirect();
-  }, [slug]);
+      resolveAndRedirect();
+    }, [slug]);
 
   return (
   <div className="min-h-screen p-5 flex items-center justify-center">
