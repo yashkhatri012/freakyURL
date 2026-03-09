@@ -7,7 +7,7 @@ import { redis } from "./config/redis.js";
 import dotenv from "dotenv";
 dotenv.config();
 const app = express();
-import cors from "cors";
+
 
 app.use(
   cors({
