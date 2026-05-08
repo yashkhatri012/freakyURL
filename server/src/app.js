@@ -8,15 +8,20 @@ import dotenv from "dotenv";
 dotenv.config();
 const app = express();
 
-
 app.use(
   cors({
-    origin: "*",
+    origin: "https://google67.vercel.app",
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+app.options("*", cors());
+
+app.use((req, res, next) => {
+  console.log(req.method, req.url);
+  next();
+});
 app.use(express.json());
 
 app.get("/health", (req, res) => {
@@ -64,6 +69,7 @@ const isValidUrl = (url) => {
 
 app.post("/api/shorten", async (req, res) => {
   try {
+    console.log("Shorten route hit");
     const { longUrl, phrase } = req.body;
     // Validate URL format
     if (!longUrl || !isValidUrl(longUrl)) {
