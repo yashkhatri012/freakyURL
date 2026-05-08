@@ -5,8 +5,24 @@ import { connectRedis } from "./src/config/redis.js";
 
 const port = process.env.PORT || 5000;
 
-connectDB();
-await connectRedis(); 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+async function startServer() {
+  try {
+    await connectDB();
+
+    try {
+      await connectRedis();
+      console.log("Redis connected");
+    } catch (err) {
+      console.error("Redis failed:", err);
+    }
+
+    app.listen(port, "0.0.0.0", () => {
+      console.log(`Server running on port ${port}`);
+    });
+  } catch (err) {
+    console.error("Startup failed:", err);
+    process.exit(1);
+  }
+}
+
+startServer();
