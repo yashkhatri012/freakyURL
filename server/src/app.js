@@ -149,7 +149,15 @@ app.get("/api/resolve/:slug", async (req, res) => {
     const { slug } = req.params;
 
     // Check Redis cache first
-    const cachedUrl = await redis.get(slug);
+    let cachedUrl = null;
+
+    if (redis) {
+      try {
+        cachedUrl = await redis.get(slug);
+      } catch (err) {
+        console.error("Redis GET failed:", err);
+      }
+    }
     if (cachedUrl) {
       console.log("REDIS HIT:", slug);
 
@@ -166,7 +174,13 @@ app.get("/api/resolve/:slug", async (req, res) => {
         error: "Link not found",
       });
     }
-    await redis.set(slug, url.longUrl);
+        if (redis) {
+      try {
+        await redis.set(slug, url.longUrl);
+      } catch (err) {
+        console.error("Redis SET failed:", err);
+      }
+    }
     console.log("Redis set slug");
     url.save().catch(() => {});
 

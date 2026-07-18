@@ -2,6 +2,7 @@ import "dotenv/config";
 import connectDB from "./src/config/db.js";
 import app from "./src/app.js";
 import { connectRedis } from "./src/config/redis.js";
+import { startKeepAliveJob } from "./jobs/KeepBackendFromSleeping.js";
 
 const port = process.env.PORT || 5000;
 
@@ -25,4 +26,5 @@ async function startServer() {
   }
 }
 
+startKeepAliveJob();
 startServer();
